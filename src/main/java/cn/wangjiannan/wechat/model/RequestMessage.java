@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechart.model;
+package cn.wangjiannan.wechat.model;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import lombok.Data;

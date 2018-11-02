@@ -1,9 +1,9 @@
-package cn.wangjiannan.wechart;
+package cn.wangjiannan.wechat;
 
-import cn.wangjiannan.wechart.model.Article;
-import cn.wangjiannan.wechart.model.RequestMessage;
-import cn.wangjiannan.wechart.model.ResponseNewsMessage;
-import cn.wangjiannan.wechart.model.ResponseTextMessage;
+import cn.wangjiannan.wechat.model.Article;
+import cn.wangjiannan.wechat.model.RequestMessage;
+import cn.wangjiannan.wechat.model.ResponseNewsMessage;
+import cn.wangjiannan.wechat.model.ResponseTextMessage;
 import com.alibaba.fastjson.JSON;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
@@ -30,7 +30,7 @@ import java.util.Map;
  * @author wangjiannan
  */
 @Slf4j
-public class WechartMessageUtils {
+public class WechatMessageUtils {
     // 请求消息类型：文本
     public static final String REQ_MESSAGE_TYPE_TEXT = "text";
     // 请求消息类型：图片

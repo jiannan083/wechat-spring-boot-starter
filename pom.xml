@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.wangjiannan</groupId>
-    <artifactId>wechart-spring-boot-starter</artifactId>
+    <artifactId>wechat-spring-boot-starter</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 

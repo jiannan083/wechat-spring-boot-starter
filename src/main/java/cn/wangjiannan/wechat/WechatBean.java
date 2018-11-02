@@ -1,14 +1,14 @@
-package cn.wangjiannan.wechart;
+package cn.wangjiannan.wechat;
 
 import lombok.Data;
 
 /**
- * WechartBean.
+ * WechatBean.
  *
  * @author wangjiannan
  */
 @Data
-public class WechartBean {
+public class WechatBean {
     /**
      * accessToken.
      */

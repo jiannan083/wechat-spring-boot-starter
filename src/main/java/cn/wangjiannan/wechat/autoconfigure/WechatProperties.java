@@ -1,15 +1,15 @@
-package cn.wangjiannan.wechart.autoconfigure;
+package cn.wangjiannan.wechat.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * WechartProperties.
+ * WechatProperties.
  *
  * @author wangjiannan
  */
-@ConfigurationProperties(prefix = WechartProperties.WECHART_PREFIX)
-public class WechartProperties {
-    public static final String WECHART_PREFIX = "wechart";
+@ConfigurationProperties(prefix = WechatProperties.WECHAT_PREFIX)
+public class WechatProperties {
+    public static final String WECHAT_PREFIX = "wechat";
 
     private String appid;
     private String secret;

@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechart;
+package cn.wangjiannan.wechat;
 
 import cn.wangjiannan.util.HttpClientUtils;
 import com.alibaba.fastjson.JSON;
@@ -20,12 +20,12 @@ import java.util.Arrays;
  * @author wangjiannan
  */
 @Slf4j
-public class WechartUtils {
+public class WechatUtils {
     private final String appid;
     private final String secret;
     private final String token;
 
-    public WechartUtils(String appid, String secret, String token) {
+    public WechatUtils(String appid, String secret, String token) {
         this.appid = appid;
         this.secret = secret;
         this.token = token;
@@ -34,9 +34,9 @@ public class WechartUtils {
     /**
      * 获取access_token.
      *
-     * @return {@link WechartBean}
+     * @return {@link WechatBean}
      */
-    public WechartBean processAccessToken() {
+    public WechatBean processAccessToken() {
         //try {
         log.info("获取微信accessToken-start");
         HttpClientUtils hc = new HttpClientUtils("https://api.weixin.qq.com/cgi-bin/token");
@@ -54,11 +54,11 @@ public class WechartUtils {
         if (expiresIn == null) {
             throw new RuntimeException("expires_in is null");
         }
-        WechartBean wechartBean = new WechartBean();
+        WechatBean wechatBean = new WechatBean();
         log.info("获取微信accessToken-end");
-        wechartBean.setAccessToken(accessToken);
-        wechartBean.setExpiresIn(expiresIn);
-        return wechartBean;
+        wechatBean.setAccessToken(accessToken);
+        wechatBean.setExpiresIn(expiresIn);
+        return wechatBean;
     }
 
     /**

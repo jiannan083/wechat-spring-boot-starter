@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechart.model;
+package cn.wangjiannan.wechat.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
