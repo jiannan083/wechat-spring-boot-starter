@@ -71,6 +71,8 @@ public class WechatMessageUtils {
     public RequestMessage parseRequestXml(HttpServletRequest request) {
         InputStream inputStream = null;
         try {
+            // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
+            request.setCharacterEncoding("UTF-8");
             // 将解析结果存储在HashMap中
             Map<String, String> map = new HashMap<>();
             // 从request中取得输入流
