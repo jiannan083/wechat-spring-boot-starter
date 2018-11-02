@@ -107,4 +107,11 @@ public class RequestMessage {
     @JSONField(name = "Url")
     private String url;
 
+
+    /**
+     * 接收事件推送.
+     */
+    @JSONField(name = "Event")
+    private String event;
+
 }
