@@ -78,8 +78,8 @@ public class WechatUtils {
                 out.print(request.getParameter("echostr"));
             }
         } catch (Exception e) {
-            log.error("wechart get core error", e);
-            throw new RuntimeException("wechart get core error");
+            log.error("wechat get core error", e);
+            throw new RuntimeException("wechat get core error");
         } finally {
             IOUtils.closeQuietly(out);
         }
@@ -104,8 +104,8 @@ public class WechatUtils {
             out = response.getWriter();
             out.print(respMessage);
         } catch (Exception e) {
-            log.error("wechart post core error", e);
-            throw new RuntimeException("wechart post core error");
+            log.error("wechat post core error", e);
+            throw new RuntimeException("wechat post core error");
         } finally {
             IOUtils.closeQuietly(out);
         }
