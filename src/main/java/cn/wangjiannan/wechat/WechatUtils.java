@@ -114,7 +114,7 @@ public class WechatUtils {
 
     // 验证签名-检验signature对请求进行校验
     private boolean checkSignature(String signature, String timestamp, String nonce) throws NoSuchAlgorithmException {
-        String[] arr = new String[]{"", timestamp, nonce};
+        String[] arr = new String[]{token, timestamp, nonce};
         // 将token、timestamp、nonce三个参数进行字典序排序
         Arrays.sort(arr);
         StringBuilder content = new StringBuilder();
