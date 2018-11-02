@@ -1,1 +1,1 @@
-# wechat-spring-boot-starter
+# wechart-spring-boot-starter
