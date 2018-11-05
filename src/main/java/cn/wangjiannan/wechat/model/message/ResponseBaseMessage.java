@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechat.model;
+package cn.wangjiannan.wechat.model.message;
 
 import lombok.Data;
 
