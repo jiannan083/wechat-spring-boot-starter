@@ -155,8 +155,9 @@ public class WechatUtils {
     public void createMenu(String accessToken, Menu menu) {
         // https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN//post请求post
         HttpClientUtils hc = new HttpClientUtils(String.format("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s", accessToken));
-        String result = hc.doPost(JSON.toJSONString(menu));
-        log.info("创建菜单返回结果,result={}", result);
+        String menuContent = JSON.toJSONString(menu);
+        String result = hc.doPost(menuContent);
+        log.info("创建菜单,menuContent={},result={}", menuContent, result);
         if (StringUtils.isEmpty(result) || !"0".equalsIgnoreCase(JSON.parseObject(result).getString("errcode"))) {
             throw new RuntimeException("创建菜单失败!");
         }
