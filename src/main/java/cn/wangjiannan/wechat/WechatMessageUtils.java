@@ -10,11 +10,12 @@ import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
@@ -29,8 +30,8 @@ import java.util.Map;
  *
  * @author wangjiannan
  */
-@Slf4j
 public class WechatMessageUtils {
+    private static final Logger log = LoggerFactory.getLogger(WechatMessageUtils.class);
     // 请求消息类型：文本
     public static final String REQ_MESSAGE_TYPE_TEXT = "text";
     // 请求消息类型：图片

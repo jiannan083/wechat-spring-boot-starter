@@ -4,8 +4,9 @@ import cn.wangjiannan.util.HttpClientUtils;
 import cn.wangjiannan.wechat.model.menu.Menu;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,8 +21,8 @@ import java.util.Arrays;
  *
  * @author wangjiannan
  */
-@Slf4j
 public class WechatUtils {
+    private static final Logger log = LoggerFactory.getLogger(WechatUtils.class);
     private final String appid;
     private final String secret;
     private final String token;

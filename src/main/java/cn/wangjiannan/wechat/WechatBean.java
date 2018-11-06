@@ -1,13 +1,10 @@
 package cn.wangjiannan.wechat;
 
-import lombok.Data;
-
 /**
  * WechatBean.
  *
  * @author wangjiannan
  */
-@Data
 public class WechatBean {
     /**
      * accessToken.
@@ -18,4 +15,27 @@ public class WechatBean {
      */
     private Long expiresIn;
 
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public Long getExpiresIn() {
+        return expiresIn;
+    }
+
+    public void setExpiresIn(Long expiresIn) {
+        this.expiresIn = expiresIn;
+    }
+
+    @Override
+    public String toString() {
+        return "WechatBean{" +
+                "accessToken='" + accessToken + '\'' +
+                ", expiresIn=" + expiresIn +
+                '}';
+    }
 }

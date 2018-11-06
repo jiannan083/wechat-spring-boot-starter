@@ -25,7 +25,6 @@ import java.util.List;
  * HttpClientUtils
  *
  * @author wangjiannan
- * @date 2017年6月19日 下午5:48:38
  */
 public class HttpClientUtils {
     private static final Logger logger = LoggerFactory.getLogger(HttpClientUtils.class);
@@ -33,7 +32,7 @@ public class HttpClientUtils {
     private CloseableHttpClient client;
     private RequestConfig requestConfig;
     private StringBuffer url = new StringBuffer();
-    private List<NameValuePair> params = new ArrayList<NameValuePair>();
+    private List<NameValuePair> params = new ArrayList<>();
     private String encoding = "UTF-8";
 
     public HttpClientUtils(String url) {
