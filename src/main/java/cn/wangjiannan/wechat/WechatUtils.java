@@ -156,7 +156,7 @@ public class WechatUtils {
         // https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN//post请求post
         HttpClientUtils hc = new HttpClientUtils(String.format("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s", accessToken));
         String menuContent = JSON.toJSONString(menu);
-        String result = hc.doPost(menuContent);
+        String result = hc.doPostWithNoParamsName(menuContent);
         log.info("创建菜单,menuContent={},result={}", menuContent, result);
         if (StringUtils.isEmpty(result) || !"0".equalsIgnoreCase(JSON.parseObject(result).getString("errcode"))) {
             throw new RuntimeException("创建菜单失败!");
