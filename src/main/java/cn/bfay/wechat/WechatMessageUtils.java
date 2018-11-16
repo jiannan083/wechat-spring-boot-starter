@@ -1,9 +1,9 @@
-package cn.wangjiannan.wechat;
+package cn.bfay.wechat;
 
-import cn.wangjiannan.wechat.model.message.Article;
-import cn.wangjiannan.wechat.model.message.RequestMessage;
-import cn.wangjiannan.wechat.model.message.ResponseNewsMessage;
-import cn.wangjiannan.wechat.model.message.ResponseTextMessage;
+import cn.bfay.wechat.model.message.Article;
+import cn.bfay.wechat.model.message.RequestMessage;
+import cn.bfay.wechat.model.message.ResponseNewsMessage;
+import cn.bfay.wechat.model.message.ResponseTextMessage;
 import com.alibaba.fastjson.JSON;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;

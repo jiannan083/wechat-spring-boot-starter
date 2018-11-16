@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechat.autoconfigure;
+package cn.bfay.wechat.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

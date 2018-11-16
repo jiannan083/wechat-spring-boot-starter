@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechat.model.menu;
+package cn.bfay.wechat.model.menu;
 
 import java.util.Arrays;
 

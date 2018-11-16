@@ -1,7 +1,7 @@
-package cn.wangjiannan.wechat;
+package cn.bfay.wechat;
 
-import cn.wangjiannan.util.HttpClientUtils;
-import cn.wangjiannan.wechat.model.menu.Menu;
+import cn.bfay.commons.okhttp.OkhttpUtils;
+import cn.bfay.wechat.model.menu.Menu;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.io.IOUtils;
@@ -15,6 +15,8 @@ import java.io.PrintWriter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 微信工具类.
@@ -39,14 +41,11 @@ public class WechatUtils {
      * @return {@link WechatBean}
      */
     public WechatBean processAccessToken() {
-        //try {
-        log.info("获取微信accessToken-start");
-        HttpClientUtils hc = new HttpClientUtils("https://api.weixin.qq.com/cgi-bin/token");
-        hc.setParams("grant_type", "client_credential");
-        hc.setParams("appid", appid);
-        hc.setParams("secret", secret);
-        String result = hc.doGet();
-        log.info("获取微信accessToken方法http请求;result={}", result);
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("grant_type", "client_credential");
+        paramMap.put("appid", appid);
+        paramMap.put("secret", secret);
+        String result = OkhttpUtils.executeGet("https://api.weixin.qq.com/cgi-bin/token", paramMap, String.class);
         JSONObject json = JSON.parseObject(result);
         String accessToken = json.getString("access_token");
         if (!StringUtils.hasText(accessToken)) {
@@ -153,11 +152,9 @@ public class WechatUtils {
      * @param menu        {@link Menu}
      */
     public void createMenu(String accessToken, Menu menu) {
-        // https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN//post请求post
-        HttpClientUtils hc = new HttpClientUtils(String.format("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s", accessToken));
         String menuContent = JSON.toJSONString(menu);
-        String result = hc.doPostWithNoParamsName(menuContent);
-        log.info("创建菜单,menuContent={},result={}", menuContent, result);
+        // https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN//post请求post
+        String result = OkhttpUtils.executePost(String.format("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s", accessToken), menuContent, String.class);
         if (StringUtils.isEmpty(result) || !"0".equalsIgnoreCase(JSON.parseObject(result).getString("errcode"))) {
             throw new RuntimeException("创建菜单失败!");
         }
@@ -171,9 +168,8 @@ public class WechatUtils {
      */
     public String getJSApiTicket(String accessToken) {
         //https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=replaceAccessToken&type=jsapi//get请求
-        HttpClientUtils hc = new HttpClientUtils(String.format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi", accessToken));
-        String result = hc.doGet();
-        log.info("获取微信jsApiTicket方法http请求;result={}", result);
+        String url = String.format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi", accessToken);
+        String result = OkhttpUtils.executeGet(url, String.class);
         if (StringUtils.isEmpty(result)) {
             throw new RuntimeException("获取微信jsApiTicket失败,result=" + result);
         }

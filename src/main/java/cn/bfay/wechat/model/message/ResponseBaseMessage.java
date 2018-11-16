@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechat.model.message;
+package cn.bfay.wechat.model.message;
 
 /**
  * 回复消息基本类.

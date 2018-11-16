@@ -1,7 +1,7 @@
-package cn.wangjiannan.wechat.autoconfigure;
+package cn.bfay.wechat.autoconfigure;
 
-import cn.wangjiannan.wechat.WechatMessageUtils;
-import cn.wangjiannan.wechat.WechatUtils;
+import cn.bfay.wechat.WechatMessageUtils;
+import cn.bfay.wechat.WechatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

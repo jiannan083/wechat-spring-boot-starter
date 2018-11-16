@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechat.model.message;
+package cn.bfay.wechat.model.message;
 
 import java.util.List;
 

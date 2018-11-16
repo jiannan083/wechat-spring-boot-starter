@@ -1,4 +1,4 @@
-package cn.wangjiannan.wechat;
+package cn.bfay.wechat;
 
 /**
  * WechatBean.
