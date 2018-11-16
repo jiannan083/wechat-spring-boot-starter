@@ -1,6 +1,6 @@
 package cn.bfay.wechat;
 
-import cn.bfay.commons.okhttp.OkhttpUtils;
+import cn.bfay.commons.okhttp.OkHttpUtils;
 import cn.bfay.wechat.model.menu.Menu;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -45,7 +45,7 @@ public class WechatUtils {
         paramMap.put("grant_type", "client_credential");
         paramMap.put("appid", appid);
         paramMap.put("secret", secret);
-        String result = OkhttpUtils.executeGet("https://api.weixin.qq.com/cgi-bin/token", paramMap, String.class);
+        String result = OkHttpUtils.executeGet("https://api.weixin.qq.com/cgi-bin/token", paramMap, String.class);
         JSONObject json = JSON.parseObject(result);
         String accessToken = json.getString("access_token");
         if (!StringUtils.hasText(accessToken)) {
@@ -154,7 +154,7 @@ public class WechatUtils {
     public void createMenu(String accessToken, Menu menu) {
         String menuContent = JSON.toJSONString(menu);
         // https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN//post请求post
-        String result = OkhttpUtils.executePost(String.format("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s", accessToken), menuContent, String.class);
+        String result = OkHttpUtils.executePost(String.format("https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s", accessToken), menuContent, String.class);
         if (StringUtils.isEmpty(result) || !"0".equalsIgnoreCase(JSON.parseObject(result).getString("errcode"))) {
             throw new RuntimeException("创建菜单失败!");
         }
@@ -169,7 +169,7 @@ public class WechatUtils {
     public String getJSApiTicket(String accessToken) {
         //https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=replaceAccessToken&type=jsapi//get请求
         String url = String.format("https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=%s&type=jsapi", accessToken);
-        String result = OkhttpUtils.executeGet(url, String.class);
+        String result = OkHttpUtils.executeGet(url, String.class);
         if (StringUtils.isEmpty(result)) {
             throw new RuntimeException("获取微信jsApiTicket失败,result=" + result);
         }
