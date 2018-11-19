@@ -1,11 +1,11 @@
-package cn.bfay.wechat;
+package cn.bfay.wechat.model;
 
 /**
- * WechatBean.
+ * WechatToken.
  *
  * @author wangjiannan
  */
-public class WechatBean {
+public class WechatToken {
     /**
      * accessToken.
      */
@@ -33,7 +33,7 @@ public class WechatBean {
 
     @Override
     public String toString() {
-        return "WechatBean{" +
+        return "WechatToken{" +
                 "accessToken='" + accessToken + '\'' +
                 ", expiresIn=" + expiresIn +
                 '}';

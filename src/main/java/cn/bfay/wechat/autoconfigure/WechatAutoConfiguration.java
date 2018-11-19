@@ -1,7 +1,6 @@
 package cn.bfay.wechat.autoconfigure;
 
-import cn.bfay.wechat.WechatMessageUtils;
-import cn.bfay.wechat.WechatUtils;
+import cn.bfay.wechat.WechatCoreManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -21,7 +20,7 @@ import javax.annotation.PostConstruct;
  */
 @Configuration //开启配置
 @EnableConfigurationProperties(WechatProperties.class) //开启使用映射实体对象
-//@ConditionalOnClass(WechatBean.class) //存在WechatPropertyBean.class时初始化该配置类
+//@ConditionalOnClass(WechatToken.class) //存在WechatPropertyBean.class时初始化该配置类
 @ConditionalOnProperty // 存在对应配置信息时初始化该配置类
         (
                 prefix = "wechat", //存在配置前缀hello
@@ -54,17 +53,9 @@ public class WechatAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean//缺失时，初始化bean并添加到SpringIoc
-    public WechatUtils wechartUtils() {
-        log.info(">>>The WechatUtils Not Found，Execute Create New Bean.");
-        WechatUtils wechatUtils = new WechatUtils(properties.getAppid(), properties.getSecret(), properties.getToken());
-        return wechatUtils;
+    public WechatCoreManager wechatCoreManager() {
+        log.info(">>>The WechatCoreManager Not Found，Execute Create New Bean.");
+        WechatCoreManager wechatCoreManager = new WechatCoreManager(properties.getAppid(), properties.getSecret(), properties.getToken());
+        return wechatCoreManager;
     }
-
-    @Bean
-    @ConditionalOnMissingBean//缺失时，初始化bean并添加到SpringIoc
-    public WechatMessageUtils wechartMessageUtils() {
-        log.info(">>>The WechatMessageUtils Not Found，Execute Create New Bean.");
-        return new WechatMessageUtils();
-    }
-
 }

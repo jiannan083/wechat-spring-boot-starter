@@ -55,6 +55,8 @@ public class WechatMessageUtils {
     public static final String EVENT_TYPE_UNSUBSCRIBE = "unsubscribe";
     // 事件类型：CLICK(自定义菜单点击事件)
     public static final String EVENT_TYPE_CLICK = "CLICK";
+    // 模板消息
+    public static final String EVENT_TYPE_TEMPLATESENDJOBFINISH = "TEMPLATESENDJOBFINISH";
 
     // 返回消息类型：文本
     private static final String RESP_MESSAGE_TYPE_TEXT = "text";
@@ -69,7 +71,7 @@ public class WechatMessageUtils {
      * @param request req
      * @return {@link RequestMessage}
      */
-    public RequestMessage parseRequestXml(HttpServletRequest request) {
+    public static RequestMessage parseRequestXml(HttpServletRequest request) {
         InputStream inputStream = null;
         try {
             // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
@@ -105,7 +107,7 @@ public class WechatMessageUtils {
      * @param respContent  respContent
      * @return string
      */
-    public String responseTextMessage(String fromUserName, String toUserName, String respContent) {
+    public static String responseTextMessage(String fromUserName, String toUserName, String respContent) {
         ResponseTextMessage responseTextMessage = new ResponseTextMessage();
         responseTextMessage.setToUserName(fromUserName);
         responseTextMessage.setFromUserName(toUserName);
@@ -123,7 +125,7 @@ public class WechatMessageUtils {
      * @param articles     articles
      * @return string
      */
-    public String responseNewsMessage(String fromUserName, String toUserName, List<Article> articles) {
+    public static String responseNewsMessage(String fromUserName, String toUserName, List<Article> articles) {
         ResponseNewsMessage responseNewsMessage = new ResponseNewsMessage();
         responseNewsMessage.setToUserName(fromUserName);
         responseNewsMessage.setFromUserName(toUserName);
@@ -140,7 +142,7 @@ public class WechatMessageUtils {
      * @param responseTextMessage .
      * @return string
      */
-    private String parseTextMessageToXml(ResponseTextMessage responseTextMessage) {
+    private static String parseTextMessageToXml(ResponseTextMessage responseTextMessage) {
         xstream.alias("xml", ResponseTextMessage.class);
         return xstream.toXML(responseTextMessage);
     }
@@ -151,7 +153,7 @@ public class WechatMessageUtils {
      * @param responseNewsMessage .
      * @return string
      */
-    private String parseNewsMessageToXml(ResponseNewsMessage responseNewsMessage) {
+    private static String parseNewsMessageToXml(ResponseNewsMessage responseNewsMessage) {
         xstream.alias("xml", ResponseNewsMessage.class);
         xstream.alias("item", Article.class);
         return xstream.toXML(responseNewsMessage);
@@ -160,7 +162,7 @@ public class WechatMessageUtils {
     /**
      * 扩展xstream，使其支持CDATA块.
      */
-    private final XStream xstream = new XStream(new XppDriver() {
+    private static final XStream xstream = new XStream(new XppDriver() {
         @Override
         public HierarchicalStreamWriter createWriter(Writer out) {
             return new PrettyPrintWriter(out) {
