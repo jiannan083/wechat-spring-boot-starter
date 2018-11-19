@@ -1,7 +1,8 @@
 package test;
 
-import cn.bfay.wechat.model.WechatToken;
+import cn.bfay.wechat.WechatCoreManager;
 import cn.bfay.wechat.WechatUtils;
+import cn.bfay.wechat.model.WechatToken;
 import cn.bfay.wechat.model.menu.Menu;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -17,17 +18,17 @@ public class WechatTest {
 
     @Test
     public void testWechat() {
-        WechatUtils wechatUtils = new WechatUtils("", "", "");
-        WechatToken wechatToken = wechatUtils.processAccessToken();
+        WechatCoreManager wechatCoreManager = new WechatCoreManager("", "", "");
+        WechatToken wechatToken = wechatCoreManager.processAccessToken();
         System.out.println("-----" + wechatToken.toString());
         //
         try {
-            wechatUtils.createMenu(wechatToken.getAccessToken(), new Menu());
+            WechatUtils.createMenu(wechatToken.getAccessToken(), new Menu());
         } catch (Exception e) {
             log.error("-----", e);
         }
         //
-        String jsApiTicket = wechatUtils.getJSApiTicket(wechatToken.getAccessToken());
+        String jsApiTicket = WechatUtils.getJSApiTicket(wechatToken.getAccessToken());
         System.out.println("-----" + jsApiTicket);
     }
 }
