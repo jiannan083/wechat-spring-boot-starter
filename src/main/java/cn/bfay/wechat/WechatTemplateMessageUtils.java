@@ -80,11 +80,15 @@ public class WechatTemplateMessageUtils {
      * @param accessToken     access_token
      * @param templateMessage {@link TemplateMessage}
      */
-    public void sendTemplateMessage(String accessToken, TemplateMessage templateMessage) {
+    public static void sendTemplateMessage(String accessToken, TemplateMessage templateMessage) {
+        //String url = String.format("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s", accessToken);
+        //String content = String.format("{\"touser\":\"%s\",\"template_id\":\"%s\",\"url\":\"%s\",\"miniprogram\":{\"appid\":\"%s\",\"pagepath\":\"%s\"},\"data\":%s}",
+        //        templateMessage.getTouser(), templateMessage.getTemplateId(), templateMessage.getUrl(),
+        //        templateMessage.getAppid(), templateMessage.getPagepath(), templateMessage.getData());
+        //String result = OkHttpUtils.executePost(url, content, String.class);
         String url = String.format("https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=%s", accessToken);
-        String content = String.format("{\"touser\":\"%s\",\"template_id\":\"%s\",\"url\":\"%s\",\"miniprogram\":{\"appid\":\"%s\",\"pagepath\":\"%s\"},\"data\":%s}",
-                templateMessage.getTouser(), templateMessage.getTemplateId(), templateMessage.getUrl(),
-                templateMessage.getAppid(), templateMessage.getPagepath(), templateMessage.getData());
+        String content = String.format("{\"touser\":\"%s\",\"template_id\":\"%s\",\"url\":\"%s\",\"data\":%s}",
+                templateMessage.getTouser(), templateMessage.getTemplateId(), templateMessage.getUrl(), templateMessage.getData());
         String result = OkHttpUtils.executePost(url, content, String.class);
     }
 }
