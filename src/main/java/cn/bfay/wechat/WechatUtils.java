@@ -1,7 +1,6 @@
 package cn.bfay.wechat;
 
 import cn.bfay.commons.okhttp.OkHttpUtils;
-import cn.bfay.wechat.model.WechatUser;
 import cn.bfay.wechat.model.menu.Menu;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
@@ -49,18 +48,6 @@ public class WechatUtils {
             throw new RuntimeException("获取微信jsApiTicket失败,result=" + result);
         }
         return jsApiTicket;
-    }
-
-    /**
-     * 根据全局access_token获取用户信息.
-     *
-     * @param accessToken  access_token
-     * @param fromUserName openid
-     * @return {@link WechatUser}
-     */
-    public static WechatUser getUserInfo(String accessToken, String fromUserName) {
-        String url = String.format("https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", accessToken, fromUserName);
-        return OkHttpUtils.executeGet(url, WechatUser.class);
     }
 
     ///**
