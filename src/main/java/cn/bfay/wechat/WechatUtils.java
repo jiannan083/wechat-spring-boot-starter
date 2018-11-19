@@ -1,6 +1,7 @@
 package cn.bfay.wechat;
 
 import cn.bfay.commons.okhttp.OkHttpUtils;
+import cn.bfay.wechat.model.WechatUser;
 import cn.bfay.wechat.model.menu.Menu;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -180,6 +181,18 @@ public class WechatUtils {
         return jsApiTicket;
     }
 
+    /**
+     * 根据全局access_token获取用户信息.
+     *
+     * @param accessToken  access_token
+     * @param fromUserName openid
+     * @return {@link WechatUser}
+     */
+    private WechatUser getUserInfo(String accessToken, String fromUserName) {
+        String url = String.format("https://api.weixin.qq.com/cgi-bin/user/info?access_token=%s&openid=%s&lang=zh_CN", accessToken, fromUserName);
+        return OkHttpUtils.executeGet(url, WechatUser.class);
+    }
+
     ///**
     // * JS签名
     // *
@@ -287,7 +300,7 @@ public class WechatUtils {
     //}
 
 //    #通过access_token获取用户基本信息地址
-//#get_user_info_url=https://api.weixin.qq.com/cgi-bin/user/info?access_token=replaceAccessToken&openid=replaceOpenid&lang=replaceLang
+//#get_user_info_url=
 //            #微信授权地址//https://open.weixin.qq.com/connect/oauth2/authorize?appid=replaceAppid&redirect_uri=replaceUrl&response_type=code&scope=replaceScope&state=STATE#wechat_redirect
 //            authorization_url=https://open.weixin.qq.com/connect/oauth2/authorize
 //    redirect_uri=www.wangjiannan.cn
@@ -297,27 +310,6 @@ public class WechatUtils {
 //            #refresh_token_url=https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=replaceAppid&grant_type=refresh_token&refresh_token=replaceRefreshToken
 //    page_get_user_info_url=https://api.weixin.qq.com/sns/userinfo
 
-    ///**
-    // * 根据全局access_token获取用户信息
-    // *
-    // * @param fromUserName
-    // * @throws Exception
-    // * @author wangjiannan
-    // * @date 2016年6月27日 下午3:37:26
-    // */
-    //private void getUserInfo(String fromUserName) throws Exception {
-    //    String url = "".replace("replaceAccessToken", "").replace("replaceOpenid", fromUserName).replace("replaceLang", "zh_CN");
-    //    // String url = ConfigProperties.WEIXIN_GET_USER_INFO_URL.replace("replaceAccessToken", ConfigProperties.WEIXIN_ACCESS_TOKEN)
-    //    // .replace("replaceOpenid", fromUserName).replace("replaceLang", "zh_CN");
-    //    HttpClientUtils hc = new HttpClientUtils(url);
-    //    String result = hc.doGet();
-    //
-    //    User user = JSONObject.parseObject(result, User.class);
-    //
-    //    logger.info("----------------------------user={}", user);
-    //    userRepository.save(user);
-    //    // logger.info("*****************************************;getUserInfoResult={}", result);
-    //}
 
     //private static String byteToHex(byte[] hash) {
     //    Formatter formatter = new Formatter();
