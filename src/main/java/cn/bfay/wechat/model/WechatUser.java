@@ -2,6 +2,8 @@ package cn.bfay.wechat.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 /**
  * 微信用户信息.
  *
@@ -65,7 +67,7 @@ public class WechatUser {
      * 用户被打上的标签ID列表.
      */
     @JsonProperty("tagid_list")
-    private String tagidList;
+    private List<Integer> tagidList;
     /**
      * 返回用户关注的渠道来源，ADD_SCENE_SEARCH 公众号搜索，ADD_SCENE_ACCOUNT_MIGRATION 公众号迁移，
      * ADD_SCENE_PROFILE_CARD 名片分享，ADD_SCENE_QR_CODE 扫描二维码，ADD_SCENEPROFILE LINK 图文页内名称点击，
@@ -188,11 +190,11 @@ public class WechatUser {
         this.groupid = groupid;
     }
 
-    public String getTagidList() {
+    public List<Integer> getTagidList() {
         return tagidList;
     }
 
-    public void setTagidList(String tagidList) {
+    public void setTagidList(List<Integer> tagidList) {
         this.tagidList = tagidList;
     }
 
