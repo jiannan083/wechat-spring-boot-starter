@@ -1,11 +1,14 @@
 package cn.bfay.wechat;
 
 import cn.bfay.commons.okhttp.OkHttpUtils;
+import cn.bfay.wechat.model.WechatServerIp;
 import cn.bfay.wechat.model.menu.Menu;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
 
 /**
  * 微信工具类.
@@ -48,6 +51,18 @@ public class WechatUtils {
             throw new RuntimeException("获取微信jsApiTicket失败,result=" + result);
         }
         return jsApiTicket;
+    }
+
+    /**
+     * 获取微信服务器IP地址.
+     *
+     * @param accessToken accessToken
+     * @return list
+     */
+    public static List<String> getCallbackIp(String accessToken) {
+        String url = String.format("https://api.weixin.qq.com/cgi-bin/getcallbackip?access_token=%s", accessToken);
+        WechatServerIp wechatServerIp = OkHttpUtils.executeGet(url, WechatServerIp.class);
+        return wechatServerIp.getIps();
     }
 
     ///**

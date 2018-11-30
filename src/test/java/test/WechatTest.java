@@ -12,6 +12,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
+
 /**
  * WechatTest.
  *
@@ -59,5 +61,11 @@ public class WechatTest {
         String content = String.format(WechatTemplateMessageUtils.TEMPLATE_DATA1, "hello", "word1", "word2", "word3", "remark");
         templateMessage.setData(content);
         WechatTemplateMessageUtils.sendTemplateMessage(accessToken, templateMessage);
+    }
+
+    @Test
+    public void testWechatIp() {
+        List<String> ips = WechatUtils.getCallbackIp(accessToken);
+        ips.forEach(System.out::println);
     }
 }
