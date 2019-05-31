@@ -1,3 +1,2 @@
 # Auto Configuration
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-cn.bfay.wechat.autoconfigure.WechatAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.bfay.wechat.autoconfigure.WechatAutoConfiguration
