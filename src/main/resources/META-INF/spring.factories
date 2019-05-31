@@ -1,2 +1,3 @@
-#配置自定义Starter的自动化配置
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=cn.bfay.wechat.autoconfigure.WechatAutoConfiguration
+# Auto Configuration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+cn.bfay.wechat.autoconfigure.WechatAutoConfiguration

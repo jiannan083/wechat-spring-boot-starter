@@ -9,7 +9,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 
@@ -22,11 +21,11 @@ import javax.annotation.PostConstruct;
 @EnableConfigurationProperties(WechatProperties.class) //开启使用映射实体对象
 //@ConditionalOnClass(WechatToken.class) //存在WechatPropertyBean.class时初始化该配置类
 @ConditionalOnProperty // 存在对应配置信息时初始化该配置类
-        (
-                prefix = "wechat", //存在配置前缀hello
-                value = "enabled", //开启
-                matchIfMissing = true //缺失检查
-        )
+    (
+        prefix = "wechat", //存在配置前缀hello
+        value = "enabled", //开启
+        matchIfMissing = true //缺失检查
+    )
 public class WechatAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(WechatAutoConfiguration.class);
 
@@ -39,15 +38,18 @@ public class WechatAutoConfiguration {
     // 构造函数之后执行
     @PostConstruct
     public void checkConfig() {
-        if (!StringUtils.hasText(properties.getAppid())) {
-            Assert.state(false, "Cannot find wechat config:appid");
-        }
-        if (!StringUtils.hasText(properties.getSecret())) {
-            Assert.state(false, "Cannot find wechat config:secret");
-        }
-        if (!StringUtils.hasText(properties.getToken())) {
-            Assert.state(false, "Cannot find wechat config:token");
-        }
+        Assert.hasText(properties.getAppid(), "Cannot find wechat config:appid");
+        Assert.hasText(properties.getSecret(), "Cannot find wechat config:secret");
+        Assert.hasText(properties.getToken(), "Cannot find wechat config:token");
+        //if (!StringUtils.hasText(properties.getAppid())) {
+        //    Assert.state(false, "Cannot find wechat config:appid");
+        //}
+        //if (!StringUtils.hasText(properties.getSecret())) {
+        //    Assert.state(false, "Cannot find wechat config:secret");
+        //}
+        //if (!StringUtils.hasText(properties.getToken())) {
+        //    Assert.state(false, "Cannot find wechat config:token");
+        //}
     }
 
 
