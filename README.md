@@ -19,9 +19,9 @@ Step 2. Add the dependency
 ```
 Step 3. "application.properties" use  
 ```
-	wechat.appid=
-    wechat.secret=
-    wechat.token=
+wechat.appid=
+wechat.secret=
+wechat.token=
 ```
 
 ## 2.0.0
