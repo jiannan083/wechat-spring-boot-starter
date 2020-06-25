@@ -23,7 +23,8 @@ bfay.wechat.appid=
 bfay.wechat.secret=
 bfay.wechat.token=
 bfay.wechat.template.模板名称1=模板值
-bfay.wechat.template.模板名称2=模板值（多个）
+bfay.wechat.template.模板名称2=模板值
+可设置多个模板
 ```
 ## 2.0.3
 基于springboot 2.1.6.RELEASE  
