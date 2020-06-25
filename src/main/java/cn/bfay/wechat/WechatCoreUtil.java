@@ -189,34 +189,23 @@ public class WechatCoreUtil {
         return wechatServerIp.getIps();
     }
 
-    ///**
-    // * 发送模板消息.
-    // *
-    // * @param accessToken     access_token
-    // * @param templateMessage {@link TemplateMessage}
-    // */
-    //public void sendTemplateMessage(String accessToken, TemplateMessage templateMessage) {
-    //    String url = BASE_URL + "/cgi-bin/message/template/send?access_token=" + accessToken;
-    //    String result = OkHttpUtils.executePost(url, bean2Json(templateMessage), String.class);
-    //}
-
     /**
      * 发送模板消息.
      *
-     * @param accessToken   access_token
-     * @param openid        openid
-     * @param templateName  templateName
-     * @param promotionLink promotionLink
-     * @param params        参数:{@link TemplateMessageNoticeData.Keyword}
+     * @param accessToken access_token
+     * @param openid      openid
+     * @param templateKey 配置文件中模板的key
+     * @param link        link 链接
+     * @param keywords    参数:{@link TemplateMessageNoticeData.Keyword}
      */
-    public void sendTemplateMessage(String accessToken, String openid, String templateName,
-                                    String promotionLink, List<TemplateMessageNoticeData.Keyword> params) {
+    public void sendTemplateMessage(String accessToken, String openid, String templateKey,
+                                    String link, List<TemplateMessageNoticeData.Keyword> keywords) {
         String url = BASE_URL + "/cgi-bin/message/template/send?access_token=" + accessToken;
         TemplateMessage templateMessage = new TemplateMessage();
         templateMessage.setTouser(openid);
-        templateMessage.setTemplateId(templates.get(templateName));
-        templateMessage.setUrl(promotionLink);
-        templateMessage.setData(transParams(params));
+        templateMessage.setTemplateId(templates.get(templateKey));
+        templateMessage.setUrl(link);
+        templateMessage.setData(transParams(keywords));
         String result = OkHttpUtils.executePost(url, bean2Json(templateMessage), String.class);
     }
 

@@ -109,7 +109,9 @@ public class TemplateMessageNoticeData implements Serializable {
 
     public static class Keyword implements Serializable {
         private static final long serialVersionUID = -7955153953501595948L;
-
+        /**
+         * 对应TemplateMessageNoticeData中的属性kyword1,keyword2等,微信模板中的名字使用对应的kyword1,keyword2等.
+         */
         private String name;
 
         private String value;
