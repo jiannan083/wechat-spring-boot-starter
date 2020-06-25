@@ -207,10 +207,10 @@ public class WechatCoreUtil {
      * @param openid        openid
      * @param templateName  templateName
      * @param promotionLink promotionLink
-     * @param params        参数
+     * @param params        参数:{@link TemplateMessageNoticeData.Keyword}
      */
     public void sendTemplateMessage(String accessToken, String openid, String templateName,
-                                    String promotionLink, List<Map<String, String>> params) {
+                                    String promotionLink, List<TemplateMessageNoticeData.Keyword> params) {
         String url = BASE_URL + "/cgi-bin/message/template/send?access_token=" + accessToken;
         TemplateMessage templateMessage = new TemplateMessage();
         templateMessage.setTouser(openid);
@@ -220,23 +220,20 @@ public class WechatCoreUtil {
         String result = OkHttpUtils.executePost(url, bean2Json(templateMessage), String.class);
     }
 
-    private TemplateMessageNoticeData transParams(List<Map<String, String>> params) {
-        try {
-            TemplateMessageNoticeData templateMessageNoticeData = new TemplateMessageNoticeData();
-            for (int i = 0; i < params.size(); i++) {
-                TemplateMessageNoticeData.Keyword keyword = new TemplateMessageNoticeData.Keyword();
-                keyword.setValue(params.get(i).get("value"));
-                keyword.setColor(params.get(i).get("color"));
+    private TemplateMessageNoticeData transParams(List<TemplateMessageNoticeData.Keyword> keywords) {
 
-                Field field = templateMessageNoticeData.getClass().getDeclaredField(params.get(i).get("name"));
+        TemplateMessageNoticeData templateMessageNoticeData = new TemplateMessageNoticeData();
+        keywords.forEach(keyword -> {
+            try {
+                Field field = templateMessageNoticeData.getClass().getDeclaredField(keyword.getName());
                 field.setAccessible(true);
                 field.set(templateMessageNoticeData, keyword);
+            } catch (Exception e) {
+                log.error("模板消息属性转换设置失败", e);
             }
-            return templateMessageNoticeData;
-        } catch (Exception e) {
-            log.error("模板消息属性转换设置失败", e);
-            return null;
-        }
+        });
+        return templateMessageNoticeData;
+
     }
 
     public static void main(String[] args) throws Exception {

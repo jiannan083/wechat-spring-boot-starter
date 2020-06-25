@@ -110,9 +110,19 @@ public class TemplateMessageNoticeData implements Serializable {
     public static class Keyword implements Serializable {
         private static final long serialVersionUID = -7955153953501595948L;
 
+        private String name;
+
         private String value;
 
         private String color;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
 
         public String getValue() {
             return value;
@@ -133,7 +143,8 @@ public class TemplateMessageNoticeData implements Serializable {
         @Override
         public String toString() {
             return "Keyword{" +
-                    "value='" + value + '\'' +
+                    "name='" + name + '\'' +
+                    ", value='" + value + '\'' +
                     ", color='" + color + '\'' +
                     '}';
         }
