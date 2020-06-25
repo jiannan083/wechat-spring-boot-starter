@@ -23,6 +23,5 @@ bfay.wechat.appid=
 bfay.wechat.secret=
 bfay.wechat.token=
 ```
-
 ## 2.0.0
 基于springboot 2.1.6.RELEASE  
