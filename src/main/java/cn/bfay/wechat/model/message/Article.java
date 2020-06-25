@@ -1,7 +1,5 @@
 package cn.bfay.wechat.model.message;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 
 /**
@@ -15,64 +13,60 @@ public class Article implements Serializable {
     /**
      * 图文消息名称.
      */
-    @JsonProperty("Title")
-    private String title;
+    private String Title;
     /**
      * 图文消息描述.
      */
-    @JsonProperty("Description")
-    private String description;
+    private String Description;
     /**
      * 图片链接，支持JPG、PNG格式，较好的效果为大图360*200，
      * 小图200*200，限制图片链接的域名需要与开发者填写的基本资料中的Url一致.
      */
-    @JsonProperty("PicUrl")
-    private String picUrl;
+    private String PicUrl;
     /**
      * 点击图文消息跳转链接.
      */
-    @JsonProperty("Url")
-    private String url;
+    private String Url;
 
     public String getTitle() {
-        return title;
+        return Title;
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        Title = title;
     }
 
     public String getDescription() {
-        return description;
+        return Description;
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        Description = description;
     }
 
     public String getPicUrl() {
-        return picUrl;
+        return PicUrl;
     }
 
     public void setPicUrl(String picUrl) {
-        this.picUrl = picUrl;
+        PicUrl = picUrl;
     }
 
     public String getUrl() {
-        return url;
+        return Url;
     }
 
     public void setUrl(String url) {
-        this.url = url;
+        Url = url;
     }
 
     @Override
     public String toString() {
         return "Article{" +
-                "title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", picUrl='" + picUrl + '\'' +
-                ", url='" + url + '\'' +
+                "Title='" + Title + '\'' +
+                ", Description='" + Description + '\'' +
+                ", PicUrl='" + PicUrl + '\'' +
+                ", Url='" + Url + '\'' +
                 '}';
     }
 }

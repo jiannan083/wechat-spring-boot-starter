@@ -1,7 +1,5 @@
 package cn.bfay.wechat.model.message;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
  * 回复消息-文本消息.
  *
@@ -13,21 +11,20 @@ public class ResponseTextMessage extends ResponseBaseMessage {
     /**
      * 回复的消息内容（换行：在content中能够换行，微信客户端就支持换行显示）.
      */
-    @JsonProperty("Content")
-    private String content;
+    private String Content;
 
     public String getContent() {
-        return content;
+        return Content;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        Content = content;
     }
 
     @Override
     public String toString() {
         return "ResponseTextMessage{" +
-                "content='" + content + '\'' +
+                "Content='" + Content + '\'' +
                 '}';
     }
 }
