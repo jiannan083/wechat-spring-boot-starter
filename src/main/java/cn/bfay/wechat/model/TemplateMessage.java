@@ -1,10 +1,14 @@
-package cn.bfay.wechat.model;
+package cn.bfay.lion.wechat.model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
 
 /**
  * 模板消息实体.
  *
  * @author wangjiannan
  */
+@Data
 public class TemplateMessage {
     /**
      * 是	接收者openid.
@@ -13,6 +17,7 @@ public class TemplateMessage {
     /**
      * 是	模板ID.
      */
+    @JsonProperty("template_id")
     private String templateId;
     /**
      * 否 模板跳转链接（海外帐号没有跳转能力）.
@@ -33,42 +38,9 @@ public class TemplateMessage {
     /**
      * 是 模板数据.
      */
-    private String data;
+    private Object data;
     ///**
     // * 否 模板内容字体颜色，不填默认为黑色.
     // */
     //private String color;
-
-
-    public String getTouser() {
-        return touser;
-    }
-
-    public void setTouser(String touser) {
-        this.touser = touser;
-    }
-
-    public String getTemplateId() {
-        return templateId;
-    }
-
-    public void setTemplateId(String templateId) {
-        this.templateId = templateId;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getData() {
-        return data;
-    }
-
-    public void setData(String data) {
-        this.data = data;
-    }
 }

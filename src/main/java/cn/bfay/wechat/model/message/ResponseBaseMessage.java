@@ -1,10 +1,13 @@
-package cn.bfay.wechat.model.message;
+package cn.bfay.lion.wechat.model.message;
+
+import lombok.Data;
 
 /**
  * 回复消息基本类.
  *
  * @author wangjiannan
  */
+@Data
 public class ResponseBaseMessage {
     /**
      * 接收方帐号（收到的OpenID）.
@@ -22,46 +25,4 @@ public class ResponseBaseMessage {
      * 消息类型（text/music/news/image）.
      */
     private String MsgType;
-
-    public String getToUserName() {
-        return ToUserName;
-    }
-
-    public void setToUserName(String toUserName) {
-        ToUserName = toUserName;
-    }
-
-    public String getFromUserName() {
-        return FromUserName;
-    }
-
-    public void setFromUserName(String fromUserName) {
-        FromUserName = fromUserName;
-    }
-
-    public Long getCreateTime() {
-        return CreateTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        CreateTime = createTime;
-    }
-
-    public String getMsgType() {
-        return MsgType;
-    }
-
-    public void setMsgType(String msgType) {
-        MsgType = msgType;
-    }
-
-    @Override
-    public String toString() {
-        return "ResponseBaseMessage{" +
-                "ToUserName='" + ToUserName + '\'' +
-                ", FromUserName='" + FromUserName + '\'' +
-                ", CreateTime=" + CreateTime +
-                ", MsgType='" + MsgType + '\'' +
-                '}';
-    }
 }

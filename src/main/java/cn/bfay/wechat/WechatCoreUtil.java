@@ -1,0 +1,370 @@
+package cn.bfay.wechat;
+
+import cn.bfay.lion.util.JsonUtils;
+import cn.bfay.lion.wechat.client.WechatClient;
+import cn.bfay.lion.wechat.model.TemplateMessage;
+import cn.bfay.lion.wechat.model.WechatAccessToken;
+import cn.bfay.lion.wechat.model.WechatPageAccessToken;
+import cn.bfay.lion.wechat.model.WechatServerIp;
+import cn.bfay.lion.wechat.model.WechatUserInfo;
+import cn.bfay.lion.wechat.model.menu.Menu;
+import cn.bfay.lion.wechat.model.message.Article;
+import cn.bfay.lion.wechat.model.message.RequestMessage;
+import cn.bfay.lion.wechat.model.message.ResponseNewsMessage;
+import cn.bfay.lion.wechat.model.message.ResponseTextMessage;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.core.util.QuickWriter;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
+import com.thoughtworks.xstream.io.xml.XppDriver;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
+import java.io.Writer;
+import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * WechatCoreManager.
+ *
+ * @author wangjiannan
+ * @since 2019/10/24
+ */
+@Slf4j
+public class WechatCoreManager {
+    private final String appid;
+    private final String secret;
+    private final String token;
+    private final WechatClient wechatClient;
+
+    public WechatCoreManager(String appid, String secret, String token, WechatClient wechatClient) {
+        this.appid = appid;
+        this.secret = secret;
+        this.token = token;
+        this.wechatClient = wechatClient;
+    }
+
+    /**
+     * 接入校验.
+     *
+     * @param request request
+     * @return string
+     */
+    public String coreCheck(HttpServletRequest request) {
+        try {
+            // 通过检验signature对请求进行校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败
+            if (checkSignature(token, request.getParameter("signature"),
+                request.getParameter("timestamp"), request.getParameter("nonce"))) {
+                return request.getParameter("echostr");
+            } else {
+                return "";
+            }
+        } catch (Exception e) {
+            log.error("wechat get core error", e);
+            return "";
+        }
+    }
+
+    ///**
+    // * 消息解析处理.
+    // *
+    // * @param request request
+    // * @return {@link RequestMessage}
+    // */
+    //public RequestMessage coreProcess(HttpServletRequest request) {
+    //    return WechatMessageUtils.parseRequestXml(request);
+    //}
+
+    /**
+     * 获取access_token.
+     *
+     * @return {@link WechatAccessToken}
+     */
+    public WechatAccessToken getWechatAccessToken() {
+        return wechatClient.getWechatAccessToken("client_credential", appid, secret);
+    }
+
+    /**
+     * 获取微信用户信息.
+     *
+     * @param accessToken accessToken
+     * @param openid      openid
+     * @return {@link WechatUserInfo}
+     */
+    public WechatUserInfo getWechatUserInfo(String accessToken, String openid) {
+        return wechatClient.getWechatUserInfo(accessToken, openid, "zh_CN");
+    }
+
+    /**
+     * 获取微信用户信息（页面方式获取）.
+     *
+     * @param code code
+     * @return {@link WechatUserInfo}
+     */
+    public WechatUserInfo getWechatUserInfo(String code) {
+        WechatPageAccessToken wechatPageAccessToken = getWechatPageAccessToken(code);
+
+        String result = wechatClient.getWechatUserInfoByPage(wechatPageAccessToken.getAccessToken(), wechatPageAccessToken.getOpenid(), "zh_CN");
+        return JsonUtils.json2Bean(result, WechatUserInfo.class);
+    }
+
+    /**
+     * 获取网页授权access_token.
+     *
+     * @param code code
+     * @return {@link WechatPageAccessToken}
+     */
+    public WechatPageAccessToken getWechatPageAccessToken(String code) {
+        String tokenResult = wechatClient.getWechatPageAccessToken(appid, secret, code, "authorization_code");
+        return JsonUtils.json2Bean(tokenResult, WechatPageAccessToken.class);
+    }
+
+    /**
+     * 获取微信服务ip列表.
+     *
+     * @param accessToken accessToken
+     * @return list
+     */
+    public List<String> getWechatServerIp(String accessToken) {
+        WechatServerIp wechatServerIp = wechatClient.getWechatServerIp(accessToken);
+        return wechatServerIp.getIps();
+    }
+
+    /**
+     * 发送模板消息.
+     *
+     * @param accessToken     access_token
+     * @param templateMessage {@link TemplateMessage}
+     */
+    public void sendWechatTemplateMessage(String accessToken, TemplateMessage templateMessage) {
+        String result = wechatClient.sendWechatTemplateMessage(accessToken, templateMessage);
+    }
+
+    /**
+     * 创建微信菜单.
+     *
+     * @param accessToken accessToken
+     * @param menu        menu
+     */
+    public void createWechatMenu(String accessToken, Menu menu) {
+        wechatClient.createWechatMenu(accessToken, menu);
+    }
+
+    public static final String SCOPE_TYPE_BASE = "snsapi_base";
+    public static final String SCOPE_TYPE_USERINFO = "snsapi_userinfo";
+
+    /**
+     * 生成授权url.
+     *
+     * @param redirectUri redirectUri
+     * @return string
+     */
+    public String generateAuthUrl(String redirectUri) {
+        return generateAuthUrl(redirectUri, SCOPE_TYPE_USERINFO);
+    }
+
+    /**
+     * 生成授权url.
+     *
+     * @param redirectUri redirectUri
+     * @param scope       scope
+     * @return string
+     */
+    public String generateAuthUrl(String redirectUri, String scope) {
+        try {
+            return String.format("https://open.weixin.qq.com/connect/oauth2/authorize?" +
+                "appid=%s" +
+                "&redirect_uri=%s" +
+                "&response_type=code" +
+                "&scope=%s" +
+                "&state=%s" +
+                "#wechat_redirect", appid, URLEncoder.encode(redirectUri, "UTF-8"), scope, "");
+        } catch (Exception e) {
+            log.error("", e);
+            return null;
+        }
+    }
+
+    private boolean checkSignature(String token, String signature, String timestamp, String nonce)
+        throws Exception {
+        String[] arr = new String[] {token, timestamp, nonce};
+        // 将token、timestamp、nonce三个参数进行字典序排序
+        Arrays.sort(arr);
+        StringBuilder content = new StringBuilder();
+        for (String anArr : arr) {
+            content.append(anArr);
+        }
+        MessageDigest md = MessageDigest.getInstance("SHA-1");
+        // 将三个参数字符串拼接成一个字符串进行sha1加密
+        byte[] digest = md.digest(content.toString().getBytes());
+        String tmpStr = byteToStr(digest);
+        // 将sha1加密后的字符串可与signature对比，标识该请求来源于微信
+        return signature.equalsIgnoreCase(tmpStr);
+    }
+
+    private String byteToStr(byte[] byteArray) {// 将字节数组转换为十六进制字符串
+        StringBuilder strDigest = new StringBuilder();
+        for (byte aByteArray : byteArray) {
+            strDigest.append(byteToHexStr(aByteArray));
+        }
+        return strDigest.toString();
+    }
+
+    private String byteToHexStr(byte mByte) {// 将字节转换为十六进制字符串
+        char[] Digit = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+        char[] tempArr = new char[2];
+        tempArr[0] = Digit[(mByte >>> 4) & 0X0F];
+        tempArr[1] = Digit[mByte & 0X0F];
+        return new String(tempArr);
+    }
+
+    //------------------------- 消息处理 -------------------------
+
+    // 请求消息类型：文本
+    public static final String REQ_MESSAGE_TYPE_TEXT = "text";
+    // 请求消息类型：图片
+    public static final String REQ_MESSAGE_TYPE_IMAGE = "image";
+    // 请求消息类型：音频
+    public static final String REQ_MESSAGE_TYPE_VOICE = "voice";
+    // 请求消息类型：视频消息
+    public static final String REQ_MESSAGE_TYPE_VIDEO = "video";
+    // 请求消息类型：小视频消息
+    public static final String REQ_MESSAGE_TYPE_SHORTVIDEO = "shortvideo";
+    // 请求消息类型：地理位置
+    public static final String REQ_MESSAGE_TYPE_LOCATION = "location";
+    // 请求消息类型：链接
+    public static final String REQ_MESSAGE_TYPE_LINK = "link";
+
+    // 请求消息类型：推送
+    public static final String REQ_MESSAGE_TYPE_EVENT = "event";
+    // 事件类型：subscribe(订阅)
+    public static final String EVENT_TYPE_SUBSCRIBE = "subscribe";
+    // 事件类型：unsubscribe(取消订阅)
+    public static final String EVENT_TYPE_UNSUBSCRIBE = "unsubscribe";
+    // 事件类型：CLICK(自定义菜单点击事件)
+    public static final String EVENT_TYPE_CLICK = "CLICK";
+    // 模板消息
+    public static final String EVENT_TYPE_TEMPLATESENDJOBFINISH = "TEMPLATESENDJOBFINISH";
+
+    // 返回消息类型：文本
+    private static final String RESP_MESSAGE_TYPE_TEXT = "text";
+    // 返回消息类型：音乐
+    private static final String RESP_MESSAGE_TYPE_MUSIC = "music";
+    // 返回消息类型：图文
+    private static final String RESP_MESSAGE_TYPE_NEWS = "news";
+
+    /**
+     * 解析微信发来的请求（XML）-借助于开源框架dom4j去解析xml.
+     *
+     * @param request req
+     * @return {@link RequestMessage}
+     */
+    public RequestMessage coreProcess(HttpServletRequest request) {
+        InputStream inputStream = null;
+        try {
+            // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
+            request.setCharacterEncoding("UTF-8");
+            // 将解析结果存储在HashMap中
+            Map<String, String> map = new HashMap<>();
+            // 从request中取得输入流
+            inputStream = request.getInputStream();
+            // 读取输入流
+            SAXReader reader = new SAXReader();
+            Document document = reader.read(inputStream);
+            // 得到xml根元素
+            Element root = document.getRootElement();
+            // 得到根元素的所有子节点
+            List<Element> elements = root.elements();
+            // 遍历所有子节点
+            for (Element e : elements) {
+                map.put(e.getName(), e.getText());
+            }
+            return JsonUtils.json2Bean(JsonUtils.bean2Json(map), RequestMessage.class);
+        } catch (Exception e) {
+            throw new RuntimeException("parseRequestXml error");
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+    }
+
+    /**
+     * 回复文本消息.
+     *
+     * @param fromUserName fromUserName
+     * @param toUserName   toUserName
+     * @param respContent  respContent
+     * @return string
+     */
+    public String responseTextMessage(String fromUserName, String toUserName, String respContent) {
+        ResponseTextMessage responseTextMessage = new ResponseTextMessage();
+        responseTextMessage.setToUserName(fromUserName);
+        responseTextMessage.setFromUserName(toUserName);
+        responseTextMessage.setCreateTime(new Date().getTime());
+        responseTextMessage.setMsgType(RESP_MESSAGE_TYPE_TEXT);
+        responseTextMessage.setContent(respContent);
+        // 文本消息对象转换成xml.
+        xstream.alias("xml", ResponseTextMessage.class);
+        return xstream.toXML(responseTextMessage);
+    }
+
+    /**
+     * 回复图文消息.
+     *
+     * @param fromUserName fromUserName
+     * @param toUserName   toUserName
+     * @param articles     articles
+     * @return string
+     */
+    public String responseNewsMessage(String fromUserName, String toUserName, List<Article> articles) {
+        ResponseNewsMessage responseNewsMessage = new ResponseNewsMessage();
+        responseNewsMessage.setToUserName(fromUserName);
+        responseNewsMessage.setFromUserName(toUserName);
+        responseNewsMessage.setCreateTime(new Date().getTime());
+        responseNewsMessage.setMsgType(RESP_MESSAGE_TYPE_NEWS);
+        responseNewsMessage.setArticleCount(articles.size());
+        responseNewsMessage.setArticles(articles);
+        // 图文消息对象转换成xml.
+        xstream.alias("xml", ResponseNewsMessage.class);
+        xstream.alias("item", Article.class);
+        return xstream.toXML(responseNewsMessage);
+    }
+
+    /**
+     * 扩展xstream，使其支持CDATA块.
+     */
+    private final XStream xstream = new XStream(new XppDriver() {
+        @Override
+        public HierarchicalStreamWriter createWriter(Writer out) {
+            return new PrettyPrintWriter(out) {
+                // 对所有xml节点的转换都增加CDATA标记
+                boolean cdata = true;
+
+                @Override
+                public void startNode(String name, Class clazz) {
+                    super.startNode(name, clazz);
+                }
+
+                @Override
+                protected void writeText(QuickWriter writer, String text) {
+                    if (cdata) {
+                        writer.write("<![CDATA[");
+                        writer.write(text);
+                        writer.write("]]>");
+                    } else {
+                        writer.write(text);
+                    }
+                }
+            };
+        }
+    });
+}

@@ -1,4 +1,4 @@
-package cn.bfay.wechat.autoconfigure;
+package cn.bfay.wechat;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -6,26 +6,26 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * WechatProperties.
  *
  * @author wangjiannan
+ * @since 2019/10/24
  */
-@ConfigurationProperties(prefix = WechatProperties.WECHAT_PREFIX)
+@ConfigurationProperties(prefix = "bfay.wechat")
 public class WechatProperties {
-    public static final String WECHAT_PREFIX = "wechat";
-
-    private String appid;
+    /**
+     * secret.
+     */
     private String secret;
+    /**
+     * token.
+     */
     private String token;
-
-    public static String getWechatPrefix() {
-        return WECHAT_PREFIX;
-    }
-
-    public String getAppid() {
-        return appid;
-    }
-
-    public void setAppid(String appid) {
-        this.appid = appid;
-    }
+    /**
+     * appid.
+     */
+    private String appid;
+    /**
+     * 是否开启debug模式；true-开启；false-不开启（默认）.
+     */
+    private boolean debug = false;
 
     public String getSecret() {
         return secret;
@@ -43,12 +43,29 @@ public class WechatProperties {
         this.token = token;
     }
 
+    public String getAppid() {
+        return appid;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid;
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
     @Override
     public String toString() {
         return "WechatProperties{" +
-                "appid='" + appid + '\'' +
-                ", secret='" + secret + '\'' +
+                "secret='" + secret + '\'' +
                 ", token='" + token + '\'' +
+                ", appid='" + appid + '\'' +
+                ", debug=" + debug +
                 '}';
     }
 }
