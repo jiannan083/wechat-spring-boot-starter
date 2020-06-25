@@ -2,6 +2,7 @@ package cn.bfay.wechat;
 
 import cn.bfay.okhttp.OkHttpUtils;
 import cn.bfay.wechat.model.TemplateMessage;
+import cn.bfay.wechat.model.TemplateMessageNoticeData;
 import cn.bfay.wechat.model.WechatAccessToken;
 import cn.bfay.wechat.model.WechatPageAccessToken;
 import cn.bfay.wechat.model.WechatServerIp;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
+import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.util.Arrays;
@@ -58,11 +60,13 @@ public class WechatCoreUtil {
     private final String appid;
     private final String secret;
     private final String token;
+    private final Map<String, String> templates;
 
-    public WechatCoreUtil(String appid, String secret, String token) {
+    public WechatCoreUtil(String appid, String secret, String token, Map<String, String> templates) {
         this.appid = appid;
         this.secret = secret;
         this.token = token;
+        this.templates = templates;
     }
 
     /**
@@ -185,16 +189,70 @@ public class WechatCoreUtil {
         return wechatServerIp.getIps();
     }
 
+    ///**
+    // * 发送模板消息.
+    // *
+    // * @param accessToken     access_token
+    // * @param templateMessage {@link TemplateMessage}
+    // */
+    //public void sendTemplateMessage(String accessToken, TemplateMessage templateMessage) {
+    //    String url = BASE_URL + "/cgi-bin/message/template/send?access_token=" + accessToken;
+    //    String result = OkHttpUtils.executePost(url, bean2Json(templateMessage), String.class);
+    //}
+
     /**
      * 发送模板消息.
      *
-     * @param accessToken     access_token
-     * @param templateMessage {@link TemplateMessage}
+     * @param accessToken   access_token
+     * @param openid        openid
+     * @param templateName  templateName
+     * @param promotionLink promotionLink
+     * @param params        参数
      */
-    public void sendTemplateMessage(String accessToken, TemplateMessage templateMessage) {
+    public void sendTemplateMessage(String accessToken, String openid, String templateName,
+                                    String promotionLink, List<Map<String, String>> params) {
         String url = BASE_URL + "/cgi-bin/message/template/send?access_token=" + accessToken;
+        TemplateMessage templateMessage = new TemplateMessage();
+        templateMessage.setTouser(openid);
+        templateMessage.setTemplateId(templates.get(templateName));
+        templateMessage.setUrl(promotionLink);
+        templateMessage.setData(transParams(params));
         String result = OkHttpUtils.executePost(url, bean2Json(templateMessage), String.class);
     }
+
+    private TemplateMessageNoticeData transParams(List<Map<String, String>> params) {
+        try {
+            TemplateMessageNoticeData templateMessageNoticeData = new TemplateMessageNoticeData();
+            for (int i = 0; i < params.size(); i++) {
+                TemplateMessageNoticeData.Keyword keyword = new TemplateMessageNoticeData.Keyword();
+                keyword.setValue(params.get(i).get("value"));
+                keyword.setColor(params.get(i).get("color"));
+
+                Field field = templateMessageNoticeData.getClass().getDeclaredField(params.get(i).get("name"));
+                field.setAccessible(true);
+                field.set(templateMessageNoticeData, keyword);
+            }
+            return templateMessageNoticeData;
+        } catch (Exception e) {
+            log.error("模板消息属性转换设置失败", e);
+            return null;
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        TemplateMessageNoticeData templateMessageNoticeData = new TemplateMessageNoticeData();
+
+        Field field = templateMessageNoticeData.getClass().getDeclaredField("keyword" + 1);
+        System.out.println(field);
+        //for (int i=0;i<fields.length;i++){
+        //    System.out.println(fields[i]);
+        //}
+        field.setAccessible(true);
+        field.set(templateMessageNoticeData, new TemplateMessageNoticeData.Keyword());
+
+        System.out.println(templateMessageNoticeData);
+    }
+
 
     /**
      * 自定义菜单创建接口.

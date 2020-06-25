@@ -13,7 +13,7 @@ Step 2. Add the dependency
 ```
 	<dependency>
 	    <groupId>com.github.jiannan083</groupId>
-	    <artifactId>wechart-spring-boot-starter</artifactId>
+	    <artifactId>wechat-spring-boot-starter</artifactId>
 	    <version>Tag</version>
 	</dependency>
 ```
@@ -22,6 +22,8 @@ Step 3. "application.properties" use
 bfay.wechat.appid=
 bfay.wechat.secret=
 bfay.wechat.token=
+bfay.wechat.template.模板名称1=模板值
+bfay.wechat.template.模板名称2=模板值（多个）
 ```
-## 2.0.0
+## 2.0.1
 基于springboot 2.1.6.RELEASE  

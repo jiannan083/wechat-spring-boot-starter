@@ -42,6 +42,7 @@ public class WechatAutoConfiguration {
     @ConditionalOnMissingBean(WechatCoreUtil.class)//缺失bean时，初始化并添加到SpringIoc
     public WechatCoreUtil wechatCoreManager() {
         log.info(">>>The WechatCoreUtil Not Found，Execute Create New Bean.");
-        return new WechatCoreUtil(properties.getAppid(), properties.getSecret(), properties.getToken());
+        return new WechatCoreUtil(properties.getAppid(), properties.getSecret(),
+                properties.getToken(), properties.getTemplate());
     }
 }
