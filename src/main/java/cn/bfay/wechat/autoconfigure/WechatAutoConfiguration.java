@@ -1,6 +1,6 @@
-package cn.bfay.wechat;
+package cn.bfay.wechat.autoconfigure;
 
-import cn.bfay.wechat.client.WechatClient;
+import cn.bfay.wechat.WechatCoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -20,7 +20,6 @@ import javax.annotation.Resource;
  */
 @Configuration
 @EnableConfigurationProperties(WechatProperties.class)
-// 存在对应配置信息时初始化该配置类
 public class WechatAutoConfiguration {
     private static final Logger log = LoggerFactory.getLogger(WechatAutoConfiguration.class);
 
@@ -40,10 +39,9 @@ public class WechatAutoConfiguration {
     }
 
     @Bean
-    //缺失时，初始化bean并添加到SpringIoc
-    @ConditionalOnMissingBean
-    public WechatCoreManager wechatCoreManager() {
-        log.info(">>>The WechatCoreManager Not Found，Execute Create New Bean.");
-        return new WechatCoreManager(properties.getAppid(), properties.getSecret(), properties.getToken(), wechatClient);
+    @ConditionalOnMissingBean(WechatCoreUtil.class)//缺失bean时，初始化并添加到SpringIoc
+    public WechatCoreUtil wechatCoreManager() {
+        log.info(">>>The WechatCoreUtil Not Found，Execute Create New Bean.");
+        return new WechatCoreUtil(properties.getAppid(), properties.getSecret(), properties.getToken());
     }
 }

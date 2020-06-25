@@ -1,7 +1,6 @@
-package cn.bfay.lion.wechat.model;
+package cn.bfay.wechat.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 
 import java.io.Serializable;
 import java.util.List;
@@ -11,10 +10,27 @@ import java.util.List;
  *
  * @author wangjiannan
  */
-@Data
 public class WechatServerIp implements Serializable {
     private static final long serialVersionUID = -887765919717061762L;
 
+    /**
+     * ip列表.
+     */
     @JsonProperty("ip_list")
     private List<String> ips;
+
+    public List<String> getIps() {
+        return ips;
+    }
+
+    public void setIps(List<String> ips) {
+        this.ips = ips;
+    }
+
+    @Override
+    public String toString() {
+        return "WechatServerIp{" +
+                "ips=" + ips +
+                '}';
+    }
 }

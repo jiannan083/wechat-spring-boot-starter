@@ -1,8 +1,8 @@
-package cn.bfay.lion.wechat.model;
+package cn.bfay.wechat.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,8 +10,9 @@ import java.util.List;
  *
  * @author wangjiannan
  */
-@Data
-public class WechatUserInfo {
+public class WechatUserInfo implements Serializable {
+    private static final long serialVersionUID = -8272054083272723917L;
+
     /**
      * 用户的标识，对当前公众号唯一.
      */
@@ -87,4 +88,163 @@ public class WechatUserInfo {
      */
     @JsonProperty("qr_scene_str")
     private String qrSceneStr;
+
+    public String getOpenid() {
+        return openid;
+    }
+
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
+
+    public Integer getSubscribe() {
+        return subscribe;
+    }
+
+    public void setSubscribe(Integer subscribe) {
+        this.subscribe = subscribe;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public Integer getSex() {
+        return sex;
+    }
+
+    public void setSex(Integer sex) {
+        this.sex = sex;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getHeadimgurl() {
+        return headimgurl;
+    }
+
+    public void setHeadimgurl(String headimgurl) {
+        this.headimgurl = headimgurl;
+    }
+
+    public Long getSubscribeTime() {
+        return subscribeTime;
+    }
+
+    public void setSubscribeTime(Long subscribeTime) {
+        this.subscribeTime = subscribeTime;
+    }
+
+    public String getUnionid() {
+        return unionid;
+    }
+
+    public void setUnionid(String unionid) {
+        this.unionid = unionid;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Integer getGroupid() {
+        return groupid;
+    }
+
+    public void setGroupid(Integer groupid) {
+        this.groupid = groupid;
+    }
+
+    public List<Integer> getTagidList() {
+        return tagidList;
+    }
+
+    public void setTagidList(List<Integer> tagidList) {
+        this.tagidList = tagidList;
+    }
+
+    public String getSubscribeScene() {
+        return subscribeScene;
+    }
+
+    public void setSubscribeScene(String subscribeScene) {
+        this.subscribeScene = subscribeScene;
+    }
+
+    public Integer getQrScene() {
+        return qrScene;
+    }
+
+    public void setQrScene(Integer qrScene) {
+        this.qrScene = qrScene;
+    }
+
+    public String getQrSceneStr() {
+        return qrSceneStr;
+    }
+
+    public void setQrSceneStr(String qrSceneStr) {
+        this.qrSceneStr = qrSceneStr;
+    }
+
+    @Override
+    public String toString() {
+        return "WechatUserInfo{" +
+                "openid='" + openid + '\'' +
+                ", subscribe=" + subscribe +
+                ", nickname='" + nickname + '\'' +
+                ", sex=" + sex +
+                ", city='" + city + '\'' +
+                ", country='" + country + '\'' +
+                ", province='" + province + '\'' +
+                ", language='" + language + '\'' +
+                ", headimgurl='" + headimgurl + '\'' +
+                ", subscribeTime=" + subscribeTime +
+                ", unionid='" + unionid + '\'' +
+                ", remark='" + remark + '\'' +
+                ", groupid=" + groupid +
+                ", tagidList=" + tagidList +
+                ", subscribeScene='" + subscribeScene + '\'' +
+                ", qrScene=" + qrScene +
+                ", qrSceneStr='" + qrSceneStr + '\'' +
+                '}';
+    }
 }

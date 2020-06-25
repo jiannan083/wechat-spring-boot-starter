@@ -1,29 +1,36 @@
 package cn.bfay.wechat;
 
-import cn.bfay.lion.util.JsonUtils;
-import cn.bfay.lion.wechat.client.WechatClient;
-import cn.bfay.lion.wechat.model.TemplateMessage;
-import cn.bfay.lion.wechat.model.WechatAccessToken;
-import cn.bfay.lion.wechat.model.WechatPageAccessToken;
-import cn.bfay.lion.wechat.model.WechatServerIp;
-import cn.bfay.lion.wechat.model.WechatUserInfo;
-import cn.bfay.lion.wechat.model.menu.Menu;
-import cn.bfay.lion.wechat.model.message.Article;
-import cn.bfay.lion.wechat.model.message.RequestMessage;
-import cn.bfay.lion.wechat.model.message.ResponseNewsMessage;
-import cn.bfay.lion.wechat.model.message.ResponseTextMessage;
+import cn.bfay.okhttp.OkHttpUtils;
+import cn.bfay.wechat.model.TemplateMessage;
+import cn.bfay.wechat.model.WechatAccessToken;
+import cn.bfay.wechat.model.WechatPageAccessToken;
+import cn.bfay.wechat.model.WechatServerIp;
+import cn.bfay.wechat.model.WechatUserInfo;
+import cn.bfay.wechat.model.menu.Menu;
+import cn.bfay.wechat.model.message.Article;
+import cn.bfay.wechat.model.message.RequestMessage;
+import cn.bfay.wechat.model.message.ResponseNewsMessage;
+import cn.bfay.wechat.model.message.ResponseTextMessage;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.PrettyPrintWriter;
 import com.thoughtworks.xstream.io.xml.XppDriver;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.URLEncoder;
@@ -33,25 +40,29 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
+
+//import cn.bfay.util.JsonUtil;
 
 /**
- * WechatCoreManager.
+ * WechatCoreUtil.
  *
  * @author wangjiannan
  * @since 2019/10/24
  */
-@Slf4j
-public class WechatCoreManager {
+public class WechatCoreUtil {
+    private static final Logger log = LoggerFactory.getLogger(WechatCoreUtil.class);
+
+    private static final String BASE_URL = "https://api.weixin.qq.com";
+
     private final String appid;
     private final String secret;
     private final String token;
-    private final WechatClient wechatClient;
 
-    public WechatCoreManager(String appid, String secret, String token, WechatClient wechatClient) {
+    public WechatCoreUtil(String appid, String secret, String token) {
         this.appid = appid;
         this.secret = secret;
         this.token = token;
-        this.wechatClient = wechatClient;
     }
 
     /**
@@ -64,7 +75,7 @@ public class WechatCoreManager {
         try {
             // 通过检验signature对请求进行校验，若校验成功则原样返回echostr，表示接入成功，否则接入失败
             if (checkSignature(token, request.getParameter("signature"),
-                request.getParameter("timestamp"), request.getParameter("nonce"))) {
+                    request.getParameter("timestamp"), request.getParameter("nonce"))) {
                 return request.getParameter("echostr");
             } else {
                 return "";
@@ -90,43 +101,74 @@ public class WechatCoreManager {
      *
      * @return {@link WechatAccessToken}
      */
-    public WechatAccessToken getWechatAccessToken() {
-        return wechatClient.getWechatAccessToken("client_credential", appid, secret);
+    public WechatAccessToken getAccessToken() {
+        String url = BASE_URL + "/cgi-bin/token";
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("grant_type", "client_credential");
+        paramMap.put("appid", appid);
+        paramMap.put("secret", secret);
+        return OkHttpUtils.executeGet(url, paramMap, WechatAccessToken.class);
     }
 
     /**
-     * 获取微信用户信息.
+     * 获取用户基本信息（包括UnionID机制）.
      *
      * @param accessToken accessToken
      * @param openid      openid
      * @return {@link WechatUserInfo}
      */
-    public WechatUserInfo getWechatUserInfo(String accessToken, String openid) {
-        return wechatClient.getWechatUserInfo(accessToken, openid, "zh_CN");
+    public WechatUserInfo getUserInfo(String accessToken, String openid) {
+        String url = BASE_URL + "/cgi-bin/user/info";
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("access_token", accessToken);
+        paramMap.put("openid", openid);
+        paramMap.put("lang", "zh_CN");
+        return OkHttpUtils.executeGet(url, paramMap, WechatUserInfo.class);
     }
 
     /**
      * 获取微信用户信息（页面方式获取）.
+     * <p>
+     * 拉取用户信息(需scope为 snsapi_userinfo)
+     * {"errcode":40003,"errmsg":" invalid openid "}
+     * </p>
      *
      * @param code code
      * @return {@link WechatUserInfo}
      */
-    public WechatUserInfo getWechatUserInfo(String code) {
-        WechatPageAccessToken wechatPageAccessToken = getWechatPageAccessToken(code);
+    public WechatUserInfo getUserInfo(String code) {
+        WechatPageAccessToken wechatPageAccessToken = getPageAccessToken(code);
 
-        String result = wechatClient.getWechatUserInfoByPage(wechatPageAccessToken.getAccessToken(), wechatPageAccessToken.getOpenid(), "zh_CN");
-        return JsonUtils.json2Bean(result, WechatUserInfo.class);
+        String url = BASE_URL + "/sns/userinfo";
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("access_token", wechatPageAccessToken.getAccessToken());
+        paramMap.put("openid", wechatPageAccessToken.getOpenid());
+        paramMap.put("lang", "zh_CN");
+        return OkHttpUtils.executeGet(url, paramMap, WechatUserInfo.class);
     }
 
     /**
      * 获取网页授权access_token.
+     * <p>
+     * 通过code换取网页授权access_token
+     * {"errcode":40029,"errmsg":"invalid code"}
+     * 这里通过code换取的是一个特殊的网页授权access_token,与基础支持中的access_token
+     * （该access_token用于调用其他接口）不同。公众号可通过下述接口来获取网页授权access_token。
+     * 如果网页授权的作用域为snsapi_base，则本步骤中获取到网页授权access_token的同时，
+     * 也获取到了openid，
+     * </p>
      *
      * @param code code
      * @return {@link WechatPageAccessToken}
      */
-    public WechatPageAccessToken getWechatPageAccessToken(String code) {
-        String tokenResult = wechatClient.getWechatPageAccessToken(appid, secret, code, "authorization_code");
-        return JsonUtils.json2Bean(tokenResult, WechatPageAccessToken.class);
+    public WechatPageAccessToken getPageAccessToken(String code) {
+        String url = BASE_URL + "/sns/oauth2/access_token";
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("appid", appid);
+        paramMap.put("secret", secret);
+        paramMap.put("code", code);
+        paramMap.put("grant_type", "authorization_code");
+        return OkHttpUtils.executeGet(url, paramMap, WechatPageAccessToken.class);
     }
 
     /**
@@ -136,7 +178,10 @@ public class WechatCoreManager {
      * @return list
      */
     public List<String> getWechatServerIp(String accessToken) {
-        WechatServerIp wechatServerIp = wechatClient.getWechatServerIp(accessToken);
+        String url = BASE_URL + "/cgi-bin/getcallbackip";
+        Map<String, String> paramMap = new HashMap<>();
+        paramMap.put("access_token", accessToken);
+        WechatServerIp wechatServerIp = OkHttpUtils.executeGet(url, paramMap, WechatServerIp.class);
         return wechatServerIp.getIps();
     }
 
@@ -146,18 +191,20 @@ public class WechatCoreManager {
      * @param accessToken     access_token
      * @param templateMessage {@link TemplateMessage}
      */
-    public void sendWechatTemplateMessage(String accessToken, TemplateMessage templateMessage) {
-        String result = wechatClient.sendWechatTemplateMessage(accessToken, templateMessage);
+    public void sendTemplateMessage(String accessToken, TemplateMessage templateMessage) {
+        String url = BASE_URL + "/cgi-bin/message/template/send?access_token=" + accessToken;
+        String result = OkHttpUtils.executePost(url, bean2Json(templateMessage), String.class);
     }
 
     /**
-     * 创建微信菜单.
+     * 自定义菜单创建接口.
      *
      * @param accessToken accessToken
      * @param menu        menu
      */
-    public void createWechatMenu(String accessToken, Menu menu) {
-        wechatClient.createWechatMenu(accessToken, menu);
+    public void createMenu(String accessToken, Menu menu) {
+        String url = BASE_URL + "/cgi-bin/menu/create?access_token=" + accessToken;
+        String result = OkHttpUtils.executePost(url, bean2Json(menu), String.class);
     }
 
     public static final String SCOPE_TYPE_BASE = "snsapi_base";
@@ -183,12 +230,12 @@ public class WechatCoreManager {
     public String generateAuthUrl(String redirectUri, String scope) {
         try {
             return String.format("https://open.weixin.qq.com/connect/oauth2/authorize?" +
-                "appid=%s" +
-                "&redirect_uri=%s" +
-                "&response_type=code" +
-                "&scope=%s" +
-                "&state=%s" +
-                "#wechat_redirect", appid, URLEncoder.encode(redirectUri, "UTF-8"), scope, "");
+                    "appid=%s" +
+                    "&redirect_uri=%s" +
+                    "&response_type=code" +
+                    "&scope=%s" +
+                    "&state=%s" +
+                    "#wechat_redirect", appid, URLEncoder.encode(redirectUri, "UTF-8"), scope, "");
         } catch (Exception e) {
             log.error("", e);
             return null;
@@ -196,8 +243,8 @@ public class WechatCoreManager {
     }
 
     private boolean checkSignature(String token, String signature, String timestamp, String nonce)
-        throws Exception {
-        String[] arr = new String[] {token, timestamp, nonce};
+            throws Exception {
+        String[] arr = new String[]{token, timestamp, nonce};
         // 将token、timestamp、nonce三个参数进行字典序排序
         Arrays.sort(arr);
         StringBuilder content = new StringBuilder();
@@ -289,7 +336,7 @@ public class WechatCoreManager {
             for (Element e : elements) {
                 map.put(e.getName(), e.getText());
             }
-            return JsonUtils.json2Bean(JsonUtils.bean2Json(map), RequestMessage.class);
+            return json2Bean(bean2Json(map), RequestMessage.class);
         } catch (Exception e) {
             throw new RuntimeException("parseRequestXml error");
         } finally {
@@ -367,4 +414,51 @@ public class WechatCoreManager {
             };
         }
     });
+
+    // ------------------------------- json -------------------------------
+    private static ObjectMapper mapper = new ObjectMapper();
+
+    static {
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .registerModule(new JavaTimeModule())
+                .setTimeZone(TimeZone.getTimeZone("GMT+8"));
+        //.registerModule(new ParameterNamesModule())
+        //.registerModule(new Jdk8Module())
+    }
+
+    /**
+     * java对象转换为json字符串.
+     *
+     * @param object target object
+     * @return json format String
+     */
+    private String bean2Json(Object object) {
+        if (object instanceof String) {
+            return object.toString();
+        }
+        try {
+            return mapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.error("json processing exception", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * json字符串转换为指定类型java对象.
+     *
+     * @param json 需要转换的json字符串
+     * @param type 转换后的java类型
+     * @return target class of type
+     */
+    private <T> T json2Bean(String json, Class<T> type) {
+        try {
+            return mapper.readValue(json, type);
+        } catch (IOException e) {
+            log.error("json processing exception", e);
+            throw new RuntimeException(e);
+        }
+    }
 }

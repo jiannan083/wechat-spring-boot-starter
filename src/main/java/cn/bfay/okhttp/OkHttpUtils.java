@@ -24,7 +24,7 @@ import java.util.TimeZone;
 public class OkHttpUtils {
     private static final Logger log = LoggerFactory.getLogger(OkHttpUtils.class);
 
-    public static ObjectMapper mapper = new ObjectMapper();
+    private static ObjectMapper mapper = new ObjectMapper();
 
     static {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL)

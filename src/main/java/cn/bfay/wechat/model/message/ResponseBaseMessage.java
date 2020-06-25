@@ -1,28 +1,77 @@
-package cn.bfay.lion.wechat.model.message;
+package cn.bfay.wechat.model.message;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.io.Serializable;
 
 /**
  * 回复消息基本类.
  *
  * @author wangjiannan
  */
-@Data
-public class ResponseBaseMessage {
+public class ResponseBaseMessage implements Serializable {
+    private static final long serialVersionUID = -25366556272047256L;
+
     /**
      * 接收方帐号（收到的OpenID）.
      */
-    private String ToUserName;
+    @JsonProperty("ToUserName")
+    private String toUserName;
     /**
      * 开发者微信号.
      */
-    private String FromUserName;
+    @JsonProperty("FromUserName")
+    private String fromUserName;
     /**
      * 消息创建时间 （整型）.
      */
-    private Long CreateTime;
+    @JsonProperty("CreateTime")
+    private Long createTime;
     /**
      * 消息类型（text/music/news/image）.
      */
-    private String MsgType;
+    @JsonProperty("MsgType")
+    private String msgType;
+
+    public String getToUserName() {
+        return toUserName;
+    }
+
+    public void setToUserName(String toUserName) {
+        this.toUserName = toUserName;
+    }
+
+    public String getFromUserName() {
+        return fromUserName;
+    }
+
+    public void setFromUserName(String fromUserName) {
+        this.fromUserName = fromUserName;
+    }
+
+    public Long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Long createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getMsgType() {
+        return msgType;
+    }
+
+    public void setMsgType(String msgType) {
+        this.msgType = msgType;
+    }
+
+    @Override
+    public String toString() {
+        return "ResponseBaseMessage{" +
+                "toUserName='" + toUserName + '\'' +
+                ", fromUserName='" + fromUserName + '\'' +
+                ", createTime=" + createTime +
+                ", msgType='" + msgType + '\'' +
+                '}';
+    }
 }

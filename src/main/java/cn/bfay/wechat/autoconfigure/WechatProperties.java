@@ -1,4 +1,4 @@
-package cn.bfay.wechat;
+package cn.bfay.wechat.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -22,10 +22,6 @@ public class WechatProperties {
      * appid.
      */
     private String appid;
-    /**
-     * 是否开启debug模式；true-开启；false-不开启（默认）.
-     */
-    private boolean debug = false;
 
     public String getSecret() {
         return secret;
@@ -51,21 +47,12 @@ public class WechatProperties {
         this.appid = appid;
     }
 
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
-    }
-
     @Override
     public String toString() {
         return "WechatProperties{" +
                 "secret='" + secret + '\'' +
                 ", token='" + token + '\'' +
                 ", appid='" + appid + '\'' +
-                ", debug=" + debug +
                 '}';
     }
 }
