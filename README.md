@@ -26,5 +26,5 @@ bfay.wechat.template.模板名称1=模板值
 bfay.wechat.template.模板名称2=模板值
 可设置多个模板
 ```
-## 2.0.6
-基于springboot 2.1.6.RELEASE  
+## 2.1.0
+基于springboot 2.3.2.RELEASE  
