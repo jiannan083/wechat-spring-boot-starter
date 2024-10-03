@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.test.skip>true</maven.test.skip>
-        <commons-io.version>2.7</commons-io.version>
+        <commons-io.version>2.14.0</commons-io.version>
         <okhttp.version>4.8.1</okhttp.version>
         <xstream.version>1.4.11.1</xstream.version>
         <dom4j.version>1.6.1</dom4j.version>
